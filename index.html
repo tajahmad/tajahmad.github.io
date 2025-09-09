@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kids Activity Management System</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+    background-color: #f0f4f8;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* Input section for adding kids */
+  #addKidSection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #kidNameInput {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+  }
+
+  #addKidBtn {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  #addKidBtn:hover {
+    background-color: #45a049;
+  }
+
+  /* Container for kids profiles */
+  #kidsProfiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  /* Kid profile card styling */
+  .kid-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 20px;
+    width: 350px;
+    position: relative;
+  }
+
+  /* Delete kid button */
+  .delete-kid-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  .delete-kid-btn:hover {
+    background-color: #c82333;
+  }
+
+  /* Activities styling */
+  .activity {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #e0e0e0;
+    position: relative;
+    /* Removed animation for smoothness */
+  }
+
+  /* Delete activity button */
+  .delete-activity-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+  }
+  .delete-activity-btn:hover {
+    background-color: #c82333;
+  }
+
+  /* Buttons inside activity */
+  .btn {
+    padding: 6px 12px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .btn-increment {
+    background-color: #007bff;
+    color: white;
+  }
+  .btn-increment:hover {
+    background-color: #0069d9;
+    transform: scale(1.05);
+  }
+
+  .btn-set-limit {
+    background-color: #6c757d;
+    color: white;
+    margin-left: 8px;
+  }
+  .btn-set-limit:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+  }
+
+  /* Add Activity Button */
+  .add-activity-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  .add-activity-btn:hover {
+    background-color: #138496;
+    transform: scale(1.05);
+  }
+
+  /* Reset Activities Button with space */
+  .reset-activities-btn {
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 8px;
+    padding: 8px 16px;
+    background-color: #ffc107;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  .reset-activities-btn:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+  }
+
+  /* Date label styling */
+  .date-label {
+    font-size: 0.9em;
+    margin-top: 8px;
+  }
+
+  /* No animations for cards or activities */
+</style>
+</head>
+<body>
+
+<h1>Kids Activity Management System</h1>
+
+<!-- Section to add new kids -->
+<div id="addKidSection">
+  <input type="text" id="kidNameInput" placeholder="Enter Kid's Name" />
+  <button id="addKidBtn" onclick="addKid()">Add Kid</button>
+</div>
+
+<!-- Container for kids profiles -->
+<div id="kidsProfiles"></div>
+
+<script>
+const kids = JSON.parse(localStorage.getItem('kids')) || {};
+
+// Save kids data
+function saveKids() {
+  localStorage.setItem('kids', JSON.stringify(kids));
+}
+
+// Add a new kid
+function addKid() {
+  const nameInput = document.getElementById('kidNameInput');
+  const name = nameInput.value.trim();
+  if (name && !(name in kids)) {
+    kids[name] = {
+      activities: {
+        homework: { timeSpent: 0, limit: 60, date: null },
+        screenTime: { timeSpent: 0, limit: 120, date: null },
+        outdoor: { timeSpent: 0, limit: 180, date: null },
+      }
+    };
+    saveKids();
+    renderKids();
+    nameInput.value = '';
+  } else {
+    alert('Please enter a unique name.');
+  }
+}
+
+// Delete a kid
+function deleteKid(kid) {
+  if (confirm(`Are you sure you want to delete ${kid}?`)) {
+    delete kids[kid];
+    saveKids();
+    renderKids();
+  }
+}
+
+// Reset activities for a kid
+function resetActivities(kid) {
+  if (kids[kid]) {
+    for (const activity in kids[kid].activities) {
+      kids[kid].activities[activity].timeSpent = 0;
+      kids[kid].activities[activity].date = null;
+    }
+    saveKids();
+    renderKids();
+  }
+}
+
+// Delete specific activity
+function deleteActivity(kid, activity) {
+  if (kids[kid]) {
+    delete kids[kid].activities[activity];
+    saveKids();
+    renderKids();
+  }
+}
+
+// Add new activity
+function addActivity(kid) {
+  const activityName = prompt('Enter new activity name:');
+  if (activityName && !(activityName in kids[kid].activities)) {
+    kids[kid].activities[activityName] = { timeSpent: 0, limit: 60, date: null };
+    saveKids();
+    renderKids();
+  } else {
+    alert('Invalid or duplicate activity name.');
+  }
+}
+
+// Render all kids
+function renderKids() {
+  const container = document.getElementById('kidsProfiles');
+  container.innerHTML = '';
+
+  Object.keys(kids).forEach(kid => {
+    const card = document.createElement('div');
+    card.className = 'kid-card';
+
+    // Delete kid button
+    const delKidBtn = document.createElement('button');
+    delKidBtn.className = 'delete-kid-btn';
+    delKidBtn.innerText = 'Delete Kid';
+    delKidBtn.onclick = () => deleteKid(kid);
+    card.appendChild(delKidBtn);
+
+    // Kid name header
+    const header = document.createElement('h3');
+    header.innerText = kid;
+    header.style.textAlign = 'center';
+    card.appendChild(header);
+
+    // Add activity button
+    const addActBtn = document.createElement('button');
+    addActBtn.className = 'add-activity-btn';
+    addActBtn.innerText = 'Add Activity';
+    addActBtn.onclick = () => addActivity(kid);
+    card.appendChild(addActBtn);
+
+    // Reset activities button
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'reset-activities-btn';
+    resetBtn.innerText = 'Reset Activities';
+    resetBtn.onclick = () => resetActivities(kid);
+    card.appendChild(resetBtn);
+
+    // Activities
+    Object.keys(kids[kid].activities).forEach(activity => {
+      const act = kids[kid].activities[activity];
+
+      // Determine color class
+      let statusClass = '';
+      if (act.timeSpent >= act.limit) {
+        statusClass = 'status-exceeded';
+      } else if (act.timeSpent >= act.limit * 0.8) {
+        statusClass = 'status-warning';
+      } else {
+        statusClass = 'status-normal';
+      }
+
+      const activityDiv = document.createElement('div');
+      activityDiv.className = `activity ${statusClass}`;
+
+      // Last date
+      const dateStr = act.date ? formatUKDate(new Date(act.date)) : 'No date recorded';
+      const dateLabel = document.createElement('div');
+      dateLabel.className = 'date-label';
+      dateLabel.innerText = `Last Date: ${dateStr}`;
+      activityDiv.appendChild(dateLabel);
+
+      // Activity header
+      activityDiv.innerHTML += `<h4>${activity.charAt(0).toUpperCase() + activity.slice(1)}</h4>`;
+      // Time and limit
+      const p = document.createElement('p');
+      p.innerText = `Time Spent: ${act.timeSpent} min / Limit: ${act.limit} min`;
+      activityDiv.appendChild(p);
+
+      // Buttons for activity
+      const incBtn = document.createElement('button');
+      incBtn.className = 'btn btn-increment';
+      incBtn.innerText = 'Add 10 min';
+      incBtn.onclick = () => {
+        act.timeSpent += 10;
+        act.date = new Date().toISOString();
+        saveKids();
+        renderKids();
+      };
+      activityDiv.appendChild(incBtn);
+
+      const setLimitBtn = document.createElement('button');
+      setLimitBtn.className = 'btn btn-set-limit';
+      setLimitBtn.innerText = 'Set Limit';
+      setLimitBtn.onclick = () => {
+        const newLimit = prompt(`Set new limit for ${activity} (minutes):`);
+        if (newLimit !== null && !isNaN(newLimit) && newLimit.trim() !== '') {
+          kids[kid].activities[activity].limit = parseInt(newLimit);
+          saveKids();
+          renderKids();
+        }
+      };
+      activityDiv.appendChild(setLimitBtn);
+
+      const updateDateBtn = document.createElement('button');
+      updateDateBtn.className = 'btn';
+      updateDateBtn.style.backgroundColor = '#ffc107';
+      updateDateBtn.style.color = '#fff';
+      updateDateBtn.style.marginLeft = '8px';
+      updateDateBtn.innerText = 'Update Date';
+      updateDateBtn.onclick = () => {
+        const dateStr = prompt(`Enter date for ${activity} (DD/MM/YYYY):`);
+        if (dateStr && dateStr.trim() !== '') {
+          if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr.trim())) {
+            const parts = dateStr.trim().split('/');
+            const isoDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+            if (isoDate.toString() !== 'Invalid Date') {
+              kids[kid].activities[activity].date = isoDate.toISOString();
+              saveKids();
+              renderKids();
+            } else {
+              alert('Invalid date entered.');
+            }
+          } else {
+            alert('Please enter date in DD/MM/YYYY format.');
+          }
+        }
+      };
+      activityDiv.appendChild(updateDateBtn);
+
+      // Delete activity button
+      const delActBtn = document.createElement('button');
+      delActBtn.className = 'delete-activity-btn';
+      delActBtn.innerText = 'X';
+      delActBtn.title = 'Delete Activity';
+      delActBtn.onclick = () => deleteActivity(kid, activity);
+      activityDiv.appendChild(delActBtn);
+
+      activityDiv.style.marginTop = '10px';
+      card.appendChild(activityDiv);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// Format date as DD/MM/YYYY
+function formatUKDate(date) {
+  const day = ('0' + date.getDate()).slice(-2);
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Initialize display
+renderKids();
+</script>
+</body>
+</html>

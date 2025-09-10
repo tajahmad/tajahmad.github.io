@@ -4,202 +4,351 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Kids Activity Management System</title>
+<!-- Font Awesome for social media icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
+  /* Basic Reset & Font */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 20px;
-    background-color: #f0f4f8;
+    margin: 0;
+    background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'); /* Sample background image */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #333;
   }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 10px;
+  body::before {
+    content: "";
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(255,255,255,0.2);
+    z-index: -1;
   }
 
-  /* Input section for adding kids */
-  #addKidSection {
+  /* Header & Navigation */
+  header {
+    background-color: rgba(52, 58, 64, 0.8);
+    padding: 10px 20px;
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
   }
-
-  #kidNameInput {
-    padding: 8px 12px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 200px;
+  /* Hamburger Menu */
+  .menu-toggle {
+    display: none;
   }
-
-  #addKidBtn {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  #addKidBtn:hover {
-    background-color: #45a049;
-  }
-
-  /* Container for kids profiles */
-  #kidsProfiles {
+  .hamburger {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+    flex-direction: column;
+    cursor: pointer;
+    width: 30px;
+    height: 22px;
+    justify-content: space-between;
   }
-
-  /* Kid profile card styling */
-  .kid-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    padding: 20px;
-    width: 350px;
-    position: relative;
+  .hamburger span {
+    display: block;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
   }
-
-  /* Delete kid button */
-  .delete-kid-btn {
+  /* Navigation container with animation */
+  .nav-container {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #dc3545;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    top: 50px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: 15px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
   }
-  .delete-kid-btn:hover {
-    background-color: #c82333;
+  #menu-toggle:checked + .hamburger + .nav-container {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
   }
-
-  /* Activities styling */
-  .activity {
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: #e0e0e0;
-    position: relative;
-    /* Removed animation for smoothness */
-  }
-
-  /* Delete activity button */
-  .delete-activity-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background-color: #dc3545;
-    border: none;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8em;
-    transition: background-color 0.3s ease;
-  }
-  .delete-activity-btn:hover {
-    background-color: #c82333;
-  }
-
-  /* Buttons inside activity */
-  .btn {
-    padding: 6px 12px;
-    margin-top: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-
-  .btn-increment {
-    background-color: #007bff;
-    color: white;
-  }
-  .btn-increment:hover {
-    background-color: #0069d9;
-    transform: scale(1.05);
-  }
-
-  .btn-set-limit {
-    background-color: #6c757d;
-    color: white;
-    margin-left: 8px;
-  }
-  .btn-set-limit:hover {
-    background-color: #5a6268;
-    transform: scale(1.05);
-  }
-
-  /* Add Activity Button */
-  .add-activity-btn {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #17a2b8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  .add-activity-btn:hover {
-    background-color: #138496;
-    transform: scale(1.05);
-  }
-
-  /* Reset Activities Button with space */
-  .reset-activities-btn {
-    display: inline-block;
-    margin-top: 10px;
-    margin-left: 8px;
-    padding: 8px 16px;
-    background-color: #ffc107;
+  /* Links styled as buttons */
+  .landing-link {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
     color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: all 0.3s ease, transform 0.3s ease;
   }
-  .reset-activities-btn:hover {
-    background-color: #e0a800;
+  .landing-link:hover {
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     transform: scale(1.05);
   }
+  /* Sections styling */
+section {
+  display: none;
+  padding: 20px;
+  background: rgba(255,255,255,0.9);
+  margin: 20px;
+  border-radius: 15px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: fadeIn 0.5s ease;
+}
+section.active {
+  display: block;
+}
+/* Video container styles for responsiveness */
+.video-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.video-container iframe {
+  width: 100%;
+  max-width: 800px;
+  height: 450px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+p {
+  font-size: 1.2em;
+  text-align: center;
+  margin-top: 10px;
+}
 
-  /* Date label styling */
-  .date-label {
-    font-size: 0.9em;
-    margin-top: 8px;
-  }
+/* Add Kid Section styles */
+#addKidSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+#kidNameInput {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  width: 220px;
+}
+#kidNameInput:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 0 8px rgba(23, 162, 184, 0.5);
+}
+#addKidBtn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+#addKidBtn:hover {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  transform: scale(1.05);
+}
+/* Kids profiles container */
+#kidsProfiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 0 20px;
+}
+/* Kid card styles */
+.kid-card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  width: 350px;
+  position: relative;
+  backdrop-filter: blur(5px);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  50% { box-shadow: 0 0 30px rgba(0,0,0,0.3); }
+  100% { box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+}
+.delete-kid-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(220, 53, 69, 0.6);
+  border: 2px solid rgba(220, 53, 69, 0.8);
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+.delete-kid-btn:hover {
+  background: rgba(220, 53, 69, 0.8);
+  transform: scale(1.05);
+}
+/* Activity styles */
+.activity {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.7);
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  animation: pulse 2s infinite;
+}
+.delete-activity-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(220, 53, 69, 0.6);
+  border: 2px solid rgba(220, 53, 69, 0.8);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.8em;
+  transition: all 0.3s ease;
+}
+.delete-activity-btn:hover {
+  background: rgba(220, 53, 69, 0.8);
+  transform: scale(1.05);
+}
+/* Buttons inside activity */
+.btn {
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  transition: all 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.btn-increment { background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; }
+.btn-increment:hover { background: linear-gradient(135deg, #8a2be2, #4facfe); transform: scale(1.05); }
+.btn-set-limit { background: linear-gradient(135deg, #f7971e, #ffd200); color: #fff; }
+.btn-set-limit:hover { background: linear-gradient(135deg, #f7971e, #ffc107); transform: scale(1.05); }
+.add-activity-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background: linear-gradient(135deg, #00c3ff, #ffff1c); color: #fff; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
+.add-activity-btn:hover { background: linear-gradient(135deg, #ffecd2, #fcb69f); transform: scale(1.05); }
+.reset-activities-btn { display: inline-block; margin-top: 10px; margin-left: 8px; padding: 10px 20px; background: linear-gradient(135deg, #f7971e, #ffd200); color: #fff; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
+.reset-activities-btn:hover { background: linear-gradient(135deg, #f7971e, #ffc107); transform: scale(1.05); }
+.date-label { font-size: 0.9em; margin-top: 8px; color: #333; }
 
-  /* No animations for cards or activities */
+ /* Footer styles */
+footer {
+  background-color: rgba(52, 58, 64, 0.9);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+footer h3 {
+  margin-top: 0;
+}
+footer p {
+  margin: 8px 0;
+}
+.social-icons {
+  margin-top: 10px;
+  font-size: 1.5em;
+}
+.social-icons a {
+  color: #fff;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+.social-icons a:hover {
+  color: #f1c40f;
+}
+@media(max-width: 768px) {
+  #addKidSection { flex-direction: column; align-items: center; }
+}
 </style>
 </head>
 <body>
+<header>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+  <label for="menu-toggle" class="hamburger" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+  <div class="nav-container" id="navLinks">
+    <a href="#section1" class="landing-link">Learning Videos</a>
+    <a href="#section2" class="landing-link">Art Lessons</a>
+    <a href="#section3" class="landing-link">Sports Lessons</a>
+  </div>
+</header>
 
-<h1>Kids Activity Management System</h1>
+<!-- Landing Sections with videos -->
+<section id="section1">
+  <h2 style="text-align:center;">Learning Videos</h2>
+  <div class="video-container">
+    <iframe src="https://www.youtube.com/embed/5MgBikgcWnY" title="Kids Learning Video" allowfullscreen></iframe>
+  </div>
+  <p style="text-align:center;">Educational videos for kids to learn and explore.</p>
+</section>
 
-<!-- Section to add new kids -->
+<section id="section2">
+  <h2 style="text-align:center;">Art Lessons</h2>
+  <div class="video-container">
+    <iframe src="https://www.youtube.com/embed/6n3pFFPSlW4" title="Kids Art Lesson" allowfullscreen></iframe>
+  </div>
+  <p style="text-align:center;">Creative art lessons to inspire young artists.</p>
+</section>
+
+<section id="section3">
+  <h2 style="text-align:center;">Sports Lessons</h2>
+  <div class="video-container">
+    <iframe src="https://www.youtube.com/embed/1k4B7F7pKBE" title="Kids Sports" allowfullscreen></iframe>
+  </div>
+  <p style="text-align:center;">Fun sports activities to keep kids active and healthy.</p>
+</section>
+
+<!-- Add Kid Section -->
 <div id="addKidSection">
   <input type="text" id="kidNameInput" placeholder="Enter Kid's Name" />
   <button id="addKidBtn" onclick="addKid()">Add Kid</button>
 </div>
 
-<!-- Container for kids profiles -->
+<!-- Kids Profiles -->
 <div id="kidsProfiles"></div>
+
+<!-- Footer with contact info and social media -->
+<footer>
+  <h3>Contact Us</h3>
+  <p>Phone: +1 234 567 8901 | Email: info@kidsactivities.com</p>
+  <p>Address: 1234 Kids St, Fun City, Country</p>
+  <div class="social-icons">
+    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-square"></i></a>
+    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p>&copy; 2025 Ehsan HURMAT. All rights reserved.</p>
+</footer>
 
 <script>
 const kids = JSON.parse(localStorage.getItem('kids')) || {};
@@ -209,7 +358,7 @@ function saveKids() {
   localStorage.setItem('kids', JSON.stringify(kids));
 }
 
-// Add a new kid
+// Add new kid
 function addKid() {
   const nameInput = document.getElementById('kidNameInput');
   const name = nameInput.value.trim();
@@ -262,7 +411,7 @@ function deleteActivity(kid, activity) {
 // Add new activity
 function addActivity(kid) {
   const activityName = prompt('Enter new activity name:');
-  if (activityName && !(activityName in kids[kid].activities)) {
+  if (activityName && !(kids[kid].activities.hasOwnProperty(activityName))) {
     kids[kid].activities[activityName] = { timeSpent: 0, limit: 60, date: null };
     saveKids();
     renderKids();
@@ -307,11 +456,10 @@ function renderKids() {
     resetBtn.onclick = () => resetActivities(kid);
     card.appendChild(resetBtn);
 
-    // Activities
+    // Loop through activities
     Object.keys(kids[kid].activities).forEach(activity => {
       const act = kids[kid].activities[activity];
 
-      // Determine color class
       let statusClass = '';
       if (act.timeSpent >= act.limit) {
         statusClass = 'status-exceeded';
@@ -324,16 +472,14 @@ function renderKids() {
       const activityDiv = document.createElement('div');
       activityDiv.className = `activity ${statusClass}`;
 
-      // Last date
+      // Date info
       const dateStr = act.date ? formatUKDate(new Date(act.date)) : 'No date recorded';
       const dateLabel = document.createElement('div');
       dateLabel.className = 'date-label';
       dateLabel.innerText = `Last Date: ${dateStr}`;
       activityDiv.appendChild(dateLabel);
 
-      // Activity header
       activityDiv.innerHTML += `<h4>${activity.charAt(0).toUpperCase() + activity.slice(1)}</h4>`;
-      // Time and limit
       const p = document.createElement('p');
       p.innerText = `Time Spent: ${act.timeSpent} min / Limit: ${act.limit} min`;
       activityDiv.appendChild(p);
@@ -400,12 +546,10 @@ function renderKids() {
       activityDiv.style.marginTop = '10px';
       card.appendChild(activityDiv);
     });
-
     container.appendChild(card);
   });
 }
 
-// Format date as DD/MM/YYYY
 function formatUKDate(date) {
   const day = ('0' + date.getDate()).slice(-2);
   const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -413,7 +557,35 @@ function formatUKDate(date) {
   return `${day}/${month}/${year}`;
 }
 
-// Initialize display
+// Toggle main content visibility
+const checkbox = document.getElementById('menu-toggle');
+const addKidSection = document.getElementById('addKidSection');
+const kidsProfiles = document.getElementById('kidsProfiles');
+
+checkbox.addEventListener('change', () => {
+  const showMain = !checkbox.checked;
+  if (addKidSection) addKidSection.style.display = showMain ? '' : 'none';
+  if (kidsProfiles) kidsProfiles.style.display = showMain ? '' : 'none';
+  document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+});
+
+// Navigation links to show landing pages
+document.querySelectorAll('.landing-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (addKidSection) addKidSection.style.display = 'none';
+    if (kidsProfiles) kidsProfiles.style.display = 'none';
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    const targetId = link.getAttribute('href').substring(1);
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.add('active');
+    }
+    document.getElementById('menu-toggle').checked = false;
+  });
+});
+
+// Initialize
 renderKids();
 </script>
 </body>

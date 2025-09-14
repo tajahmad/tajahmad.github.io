@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -11,6 +11,7 @@
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
+    padding-bottom: 220px; /* Space for footer */
     background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'); /* Sample background image */
     background-size: cover;
     background-position: center;
@@ -27,7 +28,7 @@
 
   /* Header & Navigation */
   header {
-    background-color: rgba(52, 58, 64, 0.8);
+    background-color: rgba(52, 58, 64, 0.9);
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -99,13 +100,10 @@ section {
   display: none;
   padding: 20px;
   background: rgba(255,255,255,0.9);
-  margin: 20px;
+  margin: 20px auto;
   border-radius: 15px;
   max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  animation: fadeIn 0.5s ease;
 }
 section.active {
   display: block;
@@ -257,12 +255,17 @@ p {
 .reset-activities-btn:hover { background: linear-gradient(135deg, #f7971e, #ffc107); transform: scale(1.05); }
 .date-label { font-size: 0.9em; margin-top: 8px; color: #333; }
 
- /* Footer styles */
+/* Footer styles fixed at bottom */
 footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: rgba(52, 58, 64, 0.9);
   color: #fff;
   padding: 20px;
   text-align: center;
+  z-index: 9999;
 }
 footer h3 {
   margin-top: 0;
@@ -282,6 +285,8 @@ footer p {
 .social-icons a:hover {
   color: #f1c40f;
 }
+
+/* Add extra bottom padding to body to avoid content being hidden behind footer */
 @media(max-width: 768px) {
   #addKidSection { flex-direction: column; align-items: center; }
 }
@@ -289,6 +294,7 @@ footer p {
 </head>
 <body>
 <header>
+   
   <input type="checkbox" id="menu-toggle" class="menu-toggle" />
   <label for="menu-toggle" class="hamburger" aria-label="Menu">
     <span></span>
@@ -304,6 +310,7 @@ footer p {
 
 <!-- Landing Sections with videos -->
 <section id="section1">
+
   <h2 style="text-align:center;">Learning Videos</h2>
   <div class="video-container">
     <iframe src="https://www.youtube.com/embed/5MgBikgcWnY" title="Kids Learning Video" allowfullscreen></iframe>
@@ -326,9 +333,10 @@ footer p {
   </div>
   <p style="text-align:center;">Fun sports activities to keep kids active and healthy.</p>
 </section>
-
+<h2>Kids Activity Monitor</h2>
 <!-- Add Kid Section -->
 <div id="addKidSection">
+  
   <input type="text" id="kidNameInput" placeholder="Enter Kid's Name" />
   <button id="addKidBtn" onclick="addKid()">Add Kid</button>
 </div>
@@ -336,9 +344,9 @@ footer p {
 <!-- Kids Profiles -->
 <div id="kidsProfiles"></div>
 
-<!-- Footer with contact info and social media -->
+<!-- Footer fixed at bottom with contact info and social media -->
 <footer>
-  <h3>Contact Us</h3>
+
   <p>Phone: +1 234 567 8901 | Email: info@kidsactivities.com</p>
   <p>Address: 1234 Kids St, Fun City, Country</p>
   <div class="social-icons">
@@ -347,7 +355,7 @@ footer p {
     <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
     <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
   </div>
-  <p>&copy; 2025 Ehsan HURMAT. All rights reserved.</p>
+  <p>&copy; 2025 Kids Activity Management System By Ehsan Hurmat.</p>
 </footer>
 
 <script>
@@ -358,7 +366,6 @@ function saveKids() {
   localStorage.setItem('kids', JSON.stringify(kids));
 }
 
-// Add new kid
 function addKid() {
   const nameInput = document.getElementById('kidNameInput');
   const name = nameInput.value.trim();
@@ -378,7 +385,6 @@ function addKid() {
   }
 }
 
-// Delete a kid
 function deleteKid(kid) {
   if (confirm(`Are you sure you want to delete ${kid}?`)) {
     delete kids[kid];
@@ -387,7 +393,6 @@ function deleteKid(kid) {
   }
 }
 
-// Reset activities for a kid
 function resetActivities(kid) {
   if (kids[kid]) {
     for (const activity in kids[kid].activities) {
@@ -399,7 +404,6 @@ function resetActivities(kid) {
   }
 }
 
-// Delete specific activity
 function deleteActivity(kid, activity) {
   if (kids[kid]) {
     delete kids[kid].activities[activity];
@@ -408,7 +412,6 @@ function deleteActivity(kid, activity) {
   }
 }
 
-// Add new activity
 function addActivity(kid) {
   const activityName = prompt('Enter new activity name:');
   if (activityName && !(kids[kid].activities.hasOwnProperty(activityName))) {
@@ -420,7 +423,6 @@ function addActivity(kid) {
   }
 }
 
-// Render all kids
 function renderKids() {
   const container = document.getElementById('kidsProfiles');
   container.innerHTML = '';
@@ -484,7 +486,6 @@ function renderKids() {
       p.innerText = `Time Spent: ${act.timeSpent} min / Limit: ${act.limit} min`;
       activityDiv.appendChild(p);
 
-      // Buttons for activity
       const incBtn = document.createElement('button');
       incBtn.className = 'btn btn-increment';
       incBtn.innerText = 'Add 10 min';
@@ -535,7 +536,6 @@ function renderKids() {
       };
       activityDiv.appendChild(updateDateBtn);
 
-      // Delete activity button
       const delActBtn = document.createElement('button');
       delActBtn.className = 'delete-activity-btn';
       delActBtn.innerText = 'X';
